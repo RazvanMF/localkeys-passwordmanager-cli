@@ -1,0 +1,7 @@
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\bin\Debug\LocalKeys - CLI.exe.config
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\bin\Debug\LocalKeys - CLI.exe
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\bin\Debug\LocalKeys - CLI.pdb
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\obj\Debug\LocalKeys - CLI.csproj.AssemblyReference.cache
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\obj\Debug\LocalKeys - CLI.csproj.CoreCompileInputs.cache
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\obj\Debug\LocalKeys - CLI.exe
+C:\Razvan\Projects\Others\Visual Studio\LocalKeys - Password Manager\LocalKeys - CLI\obj\Debug\LocalKeys - CLI.pdb

@@ -1,0 +1,113 @@
+            string dummyUsername1 = "RazvanMF";
+            string dummyUsername2 = "taichi.suzuki";
+            string dummyPassword1 = "fabian55";
+            string dummyPassword2 = "yakuza4";
+
+            SHA512 sha512 = SHA512.Create();
+            byte[] sha512password = sha512.ComputeHash(Encoding.UTF8.GetBytes(dummyPassword1));
+            byte[] sha512username = sha512.ComputeHash(Encoding.UTF8.GetBytes(dummyUsername1));
+            Rfc2898DeriveBytes element = new Rfc2898DeriveBytes(sha512password, sha512username, 100);
+            byte[] passwordToStore = element.GetBytes(64);
+
+
+            Console.WriteLine(Encoding.UTF8.GetString(sha512username));
+            Console.WriteLine();
+            Console.WriteLine(Encoding.UTF8.GetString(sha512password));
+            Console.WriteLine();
+            Console.WriteLine(Encoding.UTF8.GetString(passwordToStore));
+            Console.WriteLine();
+
+
+
+            string text = "If the text above is different for both users, is decrypted normally and you can read this now, you can go on ahead.";
+            byte[] rawtext = Encoding.UTF8.GetBytes(text);
+            byte[] encryptedtext1 = null;
+            byte[] encryptedtext2 = null;
+            string decryptedtext1 = null;
+            string decryptedtext2 = null;
+
+            Rfc2898DeriveBytes deriver1 = new Rfc2898DeriveBytes(dummyPassword1, Encoding.UTF8.GetBytes(dummyUsername1));
+            byte[] key1 = deriver1.GetBytes(32); byte[] iv1 = deriver1.GetBytes(16);
+            Rfc2898DeriveBytes deriver2 = new Rfc2898DeriveBytes(dummyPassword2, Encoding.UTF8.GetBytes(dummyUsername2));
+            byte[] key2 = deriver2.GetBytes(32); byte[] iv2 = deriver2.GetBytes(16);
+
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Padding = PaddingMode.PKCS7;
+                // ENCRYPTION 1
+                aesAlg.Key = key1;
+                aesAlg.IV = iv1;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    using (CryptoStream cryStream = new CryptoStream(memStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter writer = new StreamWriter(cryStream))
+                        {
+                            writer.Write(text);
+                        }
+                        encryptedtext1 = memStream.ToArray();
+                    }
+                    
+                }
+
+                // ENCRYPTION 2
+                aesAlg.Key = key2;
+                aesAlg.IV = iv2;
+
+                encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    using (CryptoStream cryStream = new CryptoStream(memStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter writer = new StreamWriter(cryStream))
+                        {
+                            writer.Write(text);
+                        }
+                        encryptedtext2 = memStream.ToArray();
+                    }
+                }
+            }
+
+            Console.WriteLine(Encoding.UTF8.GetString(encryptedtext1));
+            Console.WriteLine(Encoding.UTF8.GetString(encryptedtext2));
+
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Padding = PaddingMode.PKCS7;
+                //DECRYPTION 1
+                aesAlg.Key = key1;
+                aesAlg.IV = iv1;
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                using (MemoryStream memStream = new MemoryStream(encryptedtext1))
+                {
+                    using (CryptoStream cryStream = new CryptoStream(memStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader reader = new StreamReader(cryStream))
+                        {
+                            decryptedtext1 = reader.ReadToEnd();
+                        }
+                    }
+                }
+
+                //DECRYPTION 2
+                aesAlg.Key = key2;
+                aesAlg.IV = iv2;
+
+                decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                using (MemoryStream memStream = new MemoryStream(encryptedtext2))
+                {
+                    using (CryptoStream cryStream = new CryptoStream(memStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader reader = new StreamReader(cryStream))
+                        {
+                            decryptedtext2 = reader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine(decryptedtext1);
+            Console.WriteLine(decryptedtext2);

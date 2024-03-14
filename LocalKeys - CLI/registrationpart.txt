@@ -1,0 +1,54 @@
+            string connectionString = @"Data Source=DESKTOP-MAIN;" +
+                                      @"Initial Catalog=LocalKeys;" +
+                                      @"Integrated Security=true;";
+
+            string username = null;
+            SecureString password = new SecureString();
+
+            Console.WriteLine("REGISTRATION:");
+
+            Console.Write("Username: ");
+            username = Console.ReadLine();
+
+            Console.Write("Password: ");
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Backspace && password.Length >= 1)
+                {
+                    password.RemoveAt(password.Length - 1);
+                    Console.Write("\b \b");
+
+                }
+
+                if ((key.Key >= ConsoleKey.A && key.Key <= ConsoleKey.Z) ||
+                    (key.Key >= ConsoleKey.D0 && key.Key <= ConsoleKey.D9))
+                {
+                    password.AppendChar(key.KeyChar);
+                    Console.Write('*');
+                }
+
+            } while (key.Key != ConsoleKey.Enter);
+
+            Console.WriteLine();
+            Console.WriteLine(new System.Net.NetworkCredential(string.Empty, password).Password);
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                DataSet UNSAFE_DataSet = new DataSet();
+                SqlDataAdapter UNSAFE_DataAdapter = new SqlDataAdapter("SELECT * FROM [UNSAFE]", conn);
+                SqlCommandBuilder UNSAFE_CMDBuilder = new SqlCommandBuilder(UNSAFE_DataAdapter);
+
+                UNSAFE_DataAdapter.Fill(UNSAFE_DataSet, "UNSAFE");
+                DataRow newRow = UNSAFE_DataSet.Tables["UNSAFE"].NewRow();
+                newRow["Username"] = username;
+                newRow["Password"] = new System.Net.NetworkCredential(string.Empty, password).Password;
+
+                UNSAFE_DataSet.Tables["UNSAFE"].Rows.Add(newRow);
+                UNSAFE_DataAdapter.Update(UNSAFE_DataSet, "UNSAFE");
+
+            }
